@@ -1,8 +1,6 @@
-*.iml
-*.ipr
-*.iws
+.classpath
+.project
+.settings
 .gradle
-.DS_Store
-/build
-*/build
-/out
+.maven
+build

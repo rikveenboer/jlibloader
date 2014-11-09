@@ -1,5 +1,12 @@
 apply plugin: 'java'
+apply plugin: 'maven'
 
-repositories {
-    mavenCentral()
+group = 'net.rubygrapefruit'
+archivesBaseName = 'platform'
+version = '0.1'
+
+uploadArchives {
+	repositories.mavenDeployer {
+		repository(url: uri('.maven'))
+	}
 }
