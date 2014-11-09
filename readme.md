@@ -1,4 +1,6 @@
+Fork of <https://github.com/adammurdoch/native-platform/> to extract code to load native libraries from artifacts.
 
+----------
 # Native-platform: Java bindings for various native APIs
 
 A collection of cross-platform Java APIs for various native APIs. Currently supports OS X, Linux, Windows and FreeBSD
