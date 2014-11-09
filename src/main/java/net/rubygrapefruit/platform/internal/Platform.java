@@ -16,7 +16,6 @@
 
 package net.rubygrapefruit.platform.internal;
 
-import net.rubygrapefruit.platform.NativeIntegration;
 import net.rubygrapefruit.platform.NativeLibraryUnavailableException;
 
 public abstract class Platform {
@@ -74,12 +73,8 @@ public abstract class Platform {
         return String.format("%s %s", getOperatingSystem(), getArchitecture());
     }
 
-    public <T extends NativeIntegration> T get(Class<T> type, NativeLibraryLoader nativeLibraryLoader) {
-        throw new NativeLibraryUnavailableException(String.format("Native integration %s is not supported for %s.", type.getSimpleName(), toString()));
-    }
-
     public String getLibraryName(String name) {
-        throw new NativeLibraryUnavailableException(String.format("Native integration is not available for %s.", toString()));
+        throw new NativeLibraryUnavailableException(String.format("Native library is not available for %s.", toString()));
     }
 
     public abstract String getId();
@@ -102,11 +97,6 @@ public abstract class Platform {
         public String getLibraryName(String name) {
             return String.format("%s.dll", name);
         }
-
-        @Override
-        public <T extends NativeIntegration> T get(Class<T> type, NativeLibraryLoader nativeLibraryLoader) {
-            return super.get(type, nativeLibraryLoader);
-        }
     }
 
     private static class Window32Bit extends Windows {
@@ -123,12 +113,7 @@ public abstract class Platform {
         }
     }
 
-    private static abstract class Posix extends Platform {
-        @Override
-        public <T extends NativeIntegration> T get(Class<T> type, NativeLibraryLoader nativeLibraryLoader) {
-            return super.get(type, nativeLibraryLoader);
-        }
-    }
+    private static abstract class Posix extends Platform {}
 
     private abstract static class Unix extends Posix {
         @Override

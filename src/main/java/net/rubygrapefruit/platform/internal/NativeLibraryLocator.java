@@ -16,12 +16,15 @@
 
 package net.rubygrapefruit.platform.internal;
 
-import net.rubygrapefruit.platform.NativeException;
-import net.rubygrapefruit.platform.internal.jni.NativeLibraryFunctions;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.net.URL;
-import java.nio.channels.FileLock;
+
+import net.rubygrapefruit.platform.NativeException;
 
 public class NativeLibraryLocator {
     private final File extractDir;
@@ -32,16 +35,13 @@ public class NativeLibraryLocator {
 
     public File find(LibraryDef libraryDef) throws IOException {
         String resourceName = String.format("%s/%s/%s", libraryDef.getGroupPath(), libraryDef.platform, libraryDef.name);
-        System.out.println(resourceName);
         if (extractDir != null) {
-            File libFile = new File(extractDir, String.format("%s/%s/%s", NativeLibraryFunctions.VERSION, libraryDef.platform, libraryDef.name));
+            File libFile = new File(extractDir, String.format("%s/%s", libraryDef.platform, libraryDef.name));
             File lockFile = new File(libFile.getParentFile(), libFile.getName() + ".lock");
             lockFile.getParentFile().mkdirs();
             lockFile.createNewFile();
             RandomAccessFile lockFileAccess = new RandomAccessFile(lockFile, "rw");
             try {
-                // Take exclusive lock on lock file
-                FileLock lock = lockFileAccess.getChannel().lock();
                 if (lockFile.length() > 0 && lockFileAccess.readBoolean()) {
                     // Library has been extracted
                     return libFile;
