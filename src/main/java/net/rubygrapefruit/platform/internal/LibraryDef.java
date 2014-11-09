@@ -1,10 +1,12 @@
 package net.rubygrapefruit.platform.internal;
 
 public class LibraryDef {
+	final String group;
     final String name;
     final String platform;
 
-    public LibraryDef(String name, String platform) {
+    public LibraryDef(String group, String name, String platform) {
+    	this.group = group;
         this.name = name;
         this.platform = platform;
     }
@@ -25,4 +27,8 @@ public class LibraryDef {
     public int hashCode() {
         return name.hashCode() ^ platform.hashCode();
     }
+
+	public String getGroupPath() {
+		return group.replace(".", "/");
+	}
 }

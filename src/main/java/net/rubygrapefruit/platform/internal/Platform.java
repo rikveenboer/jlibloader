@@ -16,10 +16,8 @@
 
 package net.rubygrapefruit.platform.internal;
 
-import net.rubygrapefruit.platform.*;
-import net.rubygrapefruit.platform.Process;
-import net.rubygrapefruit.platform.internal.jni.NativeLibraryFunctions;
-import net.rubygrapefruit.platform.internal.jni.TerminfoFunctions;
+import net.rubygrapefruit.platform.NativeIntegration;
+import net.rubygrapefruit.platform.NativeLibraryUnavailableException;
 
 public abstract class Platform {
     private static Platform platform;
@@ -77,11 +75,11 @@ public abstract class Platform {
     }
 
     public <T extends NativeIntegration> T get(Class<T> type, NativeLibraryLoader nativeLibraryLoader) {
-        throw new NativeIntegrationUnavailableException(String.format("Native integration %s is not supported for %s.", type.getSimpleName(), toString()));
+        throw new NativeLibraryUnavailableException(String.format("Native integration %s is not supported for %s.", type.getSimpleName(), toString()));
     }
 
-    public String getLibraryName() {
-        throw new NativeIntegrationUnavailableException(String.format("Native integration is not available for %s.", toString()));
+    public String getLibraryName(String name) {
+        throw new NativeLibraryUnavailableException(String.format("Native integration is not available for %s.", toString()));
     }
 
     public abstract String getId();
@@ -101,30 +99,12 @@ public abstract class Platform {
         }
 
         @Override
-        public String getLibraryName() {
-            return "native-platform.dll";
+        public String getLibraryName(String name) {
+            return String.format("%s.dll", name);
         }
 
         @Override
         public <T extends NativeIntegration> T get(Class<T> type, NativeLibraryLoader nativeLibraryLoader) {
-            if (type.equals(Process.class)) {
-                return type.cast(new WrapperProcess(new DefaultProcess(), true));
-            }
-            if (type.equals(Terminals.class)) {
-                return type.cast(new WindowsTerminals());
-            }
-            if (type.equals(ProcessLauncher.class)) {
-                return type.cast(new WrapperProcessLauncher(new WindowsProcessLauncher(new DefaultProcessLauncher())));
-            }
-            if (type.equals(SystemInfo.class)) {
-                return type.cast(new DefaultSystemInfo());
-            }
-            if (type.equals(FileSystems.class)) {
-                return type.cast(new PosixFileSystems());
-            }
-            if (type.equals(WindowsRegistry.class)) {
-                return type.cast(new DefaultWindowsRegistry());
-            }
             return super.get(type, nativeLibraryLoader);
         }
     }
@@ -144,46 +124,16 @@ public abstract class Platform {
     }
 
     private static abstract class Posix extends Platform {
-        abstract String getCursesLibraryName();
-
         @Override
         public <T extends NativeIntegration> T get(Class<T> type, NativeLibraryLoader nativeLibraryLoader) {
-            if (type.equals(PosixFiles.class)) {
-                return type.cast(new DefaultPosixFiles());
-            }
-            if (type.equals(Process.class)) {
-                return type.cast(new WrapperProcess(new DefaultProcess(), false));
-            }
-            if (type.equals(ProcessLauncher.class)) {
-                return type.cast(new WrapperProcessLauncher(new DefaultProcessLauncher()));
-            }
-            if (type.equals(Terminals.class)) {
-                nativeLibraryLoader.load(getCursesLibraryName());
-                int nativeVersion = TerminfoFunctions.getVersion();
-                if (nativeVersion != NativeLibraryFunctions.VERSION) {
-                    throw new NativeException(String.format("Unexpected native library version loaded. Expected %s, was %s.", nativeVersion, NativeLibraryFunctions.VERSION));
-                }
-                return type.cast(new TerminfoTerminals());
-            }
-            if (type.equals(SystemInfo.class)) {
-                return type.cast(new DefaultSystemInfo());
-            }
-            if (type.equals(FileSystems.class)) {
-                return type.cast(new PosixFileSystems());
-            }
             return super.get(type, nativeLibraryLoader);
         }
     }
 
     private abstract static class Unix extends Posix {
         @Override
-        public String getLibraryName() {
-            return "libnative-platform.so";
-        }
-
-        @Override
-        String getCursesLibraryName() {
-            return "libnative-platform-curses.so";
+        public String getLibraryName(String name) {
+            return String.format("lib%s.so", name);
         }
     }
 
@@ -217,13 +167,8 @@ public abstract class Platform {
 
     private static abstract class OsX extends Posix {
         @Override
-        public String getLibraryName() {
-            return "libnative-platform.dylib";
-        }
-
-        @Override
-        String getCursesLibraryName() {
-            return "libnative-platform-curses.dylib";
+        public String getLibraryName(String name) {
+    		return String.format("lib%s.dylib", name);
         }
     }
 
@@ -247,5 +192,4 @@ public abstract class Platform {
             throw new UnsupportedOperationException();
         }
     }
-
 }

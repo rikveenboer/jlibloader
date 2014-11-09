@@ -31,7 +31,8 @@ public class NativeLibraryLocator {
     }
 
     public File find(LibraryDef libraryDef) throws IOException {
-        String resourceName = String.format("net/rubygrapefruit/platform/%s/%s", libraryDef.platform, libraryDef.name);
+        String resourceName = String.format("%s/%s/%s", libraryDef.getGroupPath(), libraryDef.platform, libraryDef.name);
+        System.out.println(resourceName);
         if (extractDir != null) {
             File libFile = new File(extractDir, String.format("%s/%s/%s", NativeLibraryFunctions.VERSION, libraryDef.platform, libraryDef.name));
             File lockFile = new File(libFile.getParentFile(), libFile.getName() + ".lock");
@@ -62,7 +63,7 @@ public class NativeLibraryLocator {
             URL resource = getClass().getClassLoader().getResource(resourceName);
             if (resource != null) {
                 File libFile;
-                File libDir = File.createTempFile("native-platform", "dir");
+                File libDir = File.createTempFile(libraryDef.name, "dir");
                 libDir.delete();
                 libDir.mkdirs();
                 libFile = new File(libDir, libraryDef.name);
