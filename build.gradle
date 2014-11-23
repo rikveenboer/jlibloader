@@ -1,6 +1,10 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.2'
+}
+
 group = 'com.github.boukefalos'
 archivesBaseName = 'jlibloader'
 version = '0.1'
