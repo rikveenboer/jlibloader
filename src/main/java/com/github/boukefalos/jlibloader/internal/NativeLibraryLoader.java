@@ -14,14 +14,14 @@
  *    limitations under the License.
  */
 
-package net.rubygrapefruit.platform.internal;
-
-import net.rubygrapefruit.platform.NativeException;
-import net.rubygrapefruit.platform.NativeLibraryUnavailableException;
+package com.github.boukefalos.jlibloader.internal;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.github.boukefalos.jlibloader.NativeException;
+import com.github.boukefalos.jlibloader.NativeLibraryUnavailableException;
 
 public class NativeLibraryLoader {
     private final Set<String> loaded = new HashSet<String>();

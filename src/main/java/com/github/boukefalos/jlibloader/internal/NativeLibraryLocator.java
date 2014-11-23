@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package net.rubygrapefruit.platform.internal;
+package com.github.boukefalos.jlibloader.internal;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,7 +24,7 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.net.URL;
 
-import net.rubygrapefruit.platform.NativeException;
+import com.github.boukefalos.jlibloader.NativeException;
 
 public class NativeLibraryLocator {
     private final File extractDir;
@@ -83,7 +83,10 @@ public class NativeLibraryLocator {
         if (libFile.isFile()) {
             return libFile;
         }
-
+        libFile = new File(String.format("build/binaries/mainSharedLibrary/%s/%s", libraryDef.platform.replace("-", "_"), libraryDef.name));
+        if (libFile.isFile()) {
+            return libFile;
+        }
         return null;
     }
 

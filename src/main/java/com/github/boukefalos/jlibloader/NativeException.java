@@ -14,22 +14,16 @@
  *    limitations under the License.
  */
 
-package net.rubygrapefruit.platform;
+package com.github.boukefalos.jlibloader;
 
-/**
- * Provides some information about a file. This is a snapshot and does not change.
- */
-@ThreadSafe
-public interface PosixFile {
-    enum Type {File, Directory, Symlink, Other, Missing}
+public class NativeException extends RuntimeException {
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Returns the type of this file.
-     */
-    Type getType();
+	public NativeException(String message, Throwable throwable) {
+        super(message, throwable);
+    }
 
-    /**
-     * Returns the mode of this file.
-     */
-    int getMode();
+    public NativeException(String message) {
+        super(message);
+    }
 }

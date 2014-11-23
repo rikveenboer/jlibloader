@@ -1,8 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 
-group = 'net.rubygrapefruit'
-archivesBaseName = 'platform'
+group = 'com.github.boukefalos'
+archivesBaseName = 'jlibloader'
 version = '0.1'
 
 uploadArchives {

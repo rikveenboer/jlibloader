@@ -14,7 +14,13 @@
  *    limitations under the License.
  */
 
+package com.github.boukefalos.jlibloader;
+
 /**
- * The native integrations. Use {@link net.rubygrapefruit.platform.Native#get(Class)} to access a native integration.
+ * Thrown when a given integration is not available for the current machine.
  */
-package net.rubygrapefruit.platform;
+public class NativeLibraryUnavailableException extends NativeException {
+    public NativeLibraryUnavailableException(String message) {
+        super(message);
+    }
+}

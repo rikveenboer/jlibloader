@@ -4,3 +4,4 @@
 .gradle
 .maven
 build
+/bin/

@@ -14,18 +14,14 @@
  *    limitations under the License.
  */
 
-package net.rubygrapefruit.platform;
+package com.github.boukefalos.jlibloader;
 
 import java.io.File;
 
-import net.rubygrapefruit.platform.internal.NativeLibraryLoader;
-import net.rubygrapefruit.platform.internal.NativeLibraryLocator;
-import net.rubygrapefruit.platform.internal.Platform;
+import com.github.boukefalos.jlibloader.internal.NativeLibraryLoader;
+import com.github.boukefalos.jlibloader.internal.NativeLibraryLocator;
+import com.github.boukefalos.jlibloader.internal.Platform;
 
-/**
- * Provides access to the native integrations. Use {@link #get(Class)} to load a particular integration.
- */
-@ThreadSafe
 public class Native {
     private static NativeLibraryLoader loader;
 
@@ -41,7 +37,6 @@ public class Native {
      * @throws NativeLibraryUnavailableException When the native library is not available on the current machine.
      * @throws NativeException On failure to load the native library.
      */
-    @ThreadSafe
     static public void init(File extractDir) throws NativeLibraryUnavailableException, NativeException {
         synchronized (Native.class) {
             if (loader == null) {

@@ -1,4 +1,4 @@
-package net.rubygrapefruit.platform.internal;
+package com.github.boukefalos.jlibloader.internal;
 
 public class LibraryDef {
 	final String group;
