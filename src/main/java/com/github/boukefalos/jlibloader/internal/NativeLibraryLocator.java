@@ -35,7 +35,6 @@ public class NativeLibraryLocator {
 
     public File find(LibraryDef libraryDef) throws IOException {
         String resourceName = String.format("%s/%s/%s/%s", libraryDef.getGroupPath(), libraryDef.name, libraryDef.platform, libraryDef.file);
-        System.out.println(resourceName);
         if (extractDir != null) {
             File libFile = new File(extractDir, String.format("%s/%s", libraryDef.platform, libraryDef.file));
             File lockFile = new File(libFile.getParentFile(), libFile.getName() + ".lock");
