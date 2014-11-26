@@ -33,12 +33,12 @@ public class NativeLibraryLoader {
         this.nativeLibraryLocator = nativeLibraryLocator;
     }
 
-    public void load(String libraryGroupName, String libraryFileName) {
+    public void load(String libraryGroupName, String libraryName, String libraryFileName) {
         if (loaded.contains(libraryFileName)) {
             return;
         }
         try {
-            File libFile = nativeLibraryLocator.find(new LibraryDef(libraryGroupName, libraryFileName, platform.getId()));
+            File libFile = nativeLibraryLocator.find(new LibraryDef(libraryGroupName, libraryName, libraryFileName, platform.getId()));
             if (libFile == null) {
                 throw new NativeLibraryUnavailableException(String.format("Native library '%s' is not available for %s.", libraryFileName, platform));
             }
@@ -46,6 +46,7 @@ public class NativeLibraryLoader {
         } catch (NativeException e) {
             throw e;
         } catch (Throwable t) {
+        	t.printStackTrace();
             throw new NativeException(String.format("Failed to load native library '%s' for %s.", libraryFileName, platform), t);
         }
         loaded.add(libraryFileName);

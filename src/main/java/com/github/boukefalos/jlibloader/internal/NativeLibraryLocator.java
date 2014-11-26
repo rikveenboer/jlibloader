@@ -34,9 +34,10 @@ public class NativeLibraryLocator {
     }
 
     public File find(LibraryDef libraryDef) throws IOException {
-        String resourceName = String.format("%s/%s/%s", libraryDef.getGroupPath(), libraryDef.platform, libraryDef.name);
+        String resourceName = String.format("%s/%s/%s/%s", libraryDef.getGroupPath(), libraryDef.name, libraryDef.platform, libraryDef.file);
+        System.out.println(resourceName);
         if (extractDir != null) {
-            File libFile = new File(extractDir, String.format("%s/%s", libraryDef.platform, libraryDef.name));
+            File libFile = new File(extractDir, String.format("%s/%s", libraryDef.platform, libraryDef.file));
             File lockFile = new File(libFile.getParentFile(), libFile.getName() + ".lock");
             lockFile.getParentFile().mkdirs();
             lockFile.createNewFile();
@@ -63,27 +64,28 @@ public class NativeLibraryLocator {
             URL resource = getClass().getClassLoader().getResource(resourceName);
             if (resource != null) {
                 File libFile;
-                File libDir = File.createTempFile(libraryDef.name, "dir");
+                File libDir = File.createTempFile(libraryDef.file, "dir");
                 libDir.delete();
                 libDir.mkdirs();
-                libFile = new File(libDir, libraryDef.name);
+                libFile = new File(libDir, libraryDef.file);
                 libFile.deleteOnExit();
+                libDir.deleteOnExit();
                 copy(resource, libFile);
                 return libFile;
             }
         }
 
-        String componentName = libraryDef.name.replaceFirst("^lib", "").replaceFirst("\\.\\w+$", "");
+        String componentName = libraryDef.file.replaceFirst("^lib", "").replaceFirst("\\.\\w+$", "");
         int pos = componentName.indexOf("-");
         while (pos >= 0) {
             componentName = componentName.substring(0, pos) + Character.toUpperCase(componentName.charAt(pos + 1)) + componentName.substring(pos + 2);
             pos = componentName.indexOf("-", pos);
         }
-        File libFile = new File(String.format("build/binaries/%sSharedLibrary/%s/%s", componentName, libraryDef.platform.replace("-", "_"), libraryDef.name));
+        File libFile = new File(String.format("build/binaries/%sSharedLibrary/%s/%s", componentName, libraryDef.platform.replace("-", "_"), libraryDef.file));
         if (libFile.isFile()) {
             return libFile;
         }
-        libFile = new File(String.format("build/binaries/mainSharedLibrary/%s/%s", libraryDef.platform.replace("-", "_"), libraryDef.name));
+        libFile = new File(String.format("build/binaries/mainSharedLibrary/%s/%s", libraryDef.platform.replace("-", "_"), libraryDef.file));
         if (libFile.isFile()) {
             return libFile;
         }
