@@ -46,7 +46,7 @@ public class NativeLibraryLoader {
         } catch (NativeException e) {
             throw e;
         } catch (Throwable t) {
-        	t.printStackTrace();
+            t.printStackTrace();
             throw new NativeException(String.format("Failed to load native library '%s' for %s.", libraryFileName, platform), t);
         }
         loaded.add(libraryFileName);

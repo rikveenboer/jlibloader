@@ -153,7 +153,7 @@ public abstract class Platform {
     private static abstract class OsX extends Posix {
         @Override
         public String getLibraryName(String name) {
-    		return String.format("lib%s.dylib", name);
+            return String.format("lib%s.dylib", name);
         }
     }
 

@@ -53,18 +53,18 @@ public class Native {
     }
 
     public static void load(String group, String name) {
-    	load(group, name, name);
+        load(group, name, name);
     }
 
-	public static void load(String group, String name, String file) {
-    	init(null);
+    public static void load(String group, String name, String file) {
+        init(null);
         try {
-        	loader.load(group, name, Platform.current().getLibraryName(file));
+            loader.load(group, name, Platform.current().getLibraryName(file));
         } catch (NativeException e) {
                 throw e;
         } catch (Throwable t) {
                 throw new NativeException("Failed to load native library.");
         }
-		
-	}
+        
+    }
 }
