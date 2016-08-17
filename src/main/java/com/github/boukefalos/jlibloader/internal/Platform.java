@@ -16,6 +16,7 @@
 
 package com.github.boukefalos.jlibloader.internal;
 
+import com.github.boukefalos.jlibloader.NativeBinaryUnavailableException;
 import com.github.boukefalos.jlibloader.NativeLibraryUnavailableException;
 
 public abstract class Platform {
@@ -64,7 +65,7 @@ public abstract class Platform {
         }
     }
 
-    public boolean isWindows() {
+	public boolean isWindows() {
         return false;
     }
 
@@ -76,6 +77,10 @@ public abstract class Platform {
     public String getLibraryName(String name) {
         throw new NativeLibraryUnavailableException(String.format("Native library is not available for %s.", toString()));
     }
+
+    public String getBinaryName(String name) {
+        throw new NativeBinaryUnavailableException(String.format("Native binary is not available for %s.", toString()));
+	}
 
     public abstract String getId();
 
@@ -97,6 +102,11 @@ public abstract class Platform {
         public String getLibraryName(String name) {
             return String.format("%s.dll", name);
         }
+        
+        @Override
+    	public String getBinaryName(String name) {
+            return String.format("%s.exe", name);
+    	}
     }
 
     private static class Window32Bit extends Windows {

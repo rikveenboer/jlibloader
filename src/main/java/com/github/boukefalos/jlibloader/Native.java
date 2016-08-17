@@ -1,29 +1,17 @@
-/*
- * Copyright 2012 Adam Murdoch
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-
 package com.github.boukefalos.jlibloader;
 
 import java.io.File;
 
+import com.github.boukefalos.jlibloader.internal.NativeBinaryLoader;
+import com.github.boukefalos.jlibloader.internal.NativeBinaryLocator;
 import com.github.boukefalos.jlibloader.internal.NativeLibraryLoader;
 import com.github.boukefalos.jlibloader.internal.NativeLibraryLocator;
 import com.github.boukefalos.jlibloader.internal.Platform;
 
 public class Native {
-    private static NativeLibraryLoader loader;
+	private static Platform platform;
+    private static NativeLibraryLoader libraryLoader;
+    private static NativeBinaryLoader binaryLoader;
 
     private Native() {
     }
@@ -37,12 +25,13 @@ public class Native {
      * @throws NativeLibraryUnavailableException When the native library is not available on the current machine.
      * @throws NativeException On failure to load the native library.
      */
-    static public void init(File extractDir) throws NativeLibraryUnavailableException, NativeException {
+    static public void init(File extractDir) throws NativeException {
         synchronized (Native.class) {
-            if (loader == null) {
-                Platform platform = Platform.current();
+        	if (platform == null) {
+        		platform = Platform.current();            
                 try {
-                    loader = new NativeLibraryLoader(platform, new NativeLibraryLocator(extractDir));
+                    libraryLoader = new NativeLibraryLoader(platform, new NativeLibraryLocator(extractDir));
+                    binaryLoader = new NativeBinaryLoader(platform, new NativeBinaryLocator(extractDir));
                 } catch (NativeException e) {
                     throw e;
                 } catch (Throwable t) {
@@ -59,12 +48,26 @@ public class Native {
     public static void load(String group, String name, String file) {
         init(null);
         try {
-            loader.load(group, name, Platform.current().getLibraryName(file));
+            libraryLoader.load(group, name, Platform.current().getLibraryName(file));
         } catch (NativeException e) {
-                throw e;
+            throw e;
         } catch (Throwable t) {
-                throw new NativeException("Failed to load native library.");
-        }
-        
+            throw new NativeException("Failed to load native library.");
+        }        
     }
+
+	public static void binary(String group, String name) {
+		binary(group, name, name);		
+	}
+
+	public static String binary(String group, String name, String file) {
+        init(null);
+        try {
+            return binaryLoader.load(group, name, Platform.current().getBinaryName(file));
+        } catch (NativeException e) {
+            throw e;
+        } catch (Throwable t) {
+            throw new NativeException("Failed to load native binary.");
+        }		
+	}
 }

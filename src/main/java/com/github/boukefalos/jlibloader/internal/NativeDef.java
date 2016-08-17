@@ -1,12 +1,12 @@
 package com.github.boukefalos.jlibloader.internal;
 
-public class LibraryDef {
+public class NativeDef {
     final String group;
     final String name;
     final String file;
     final String platform;
 
-    public LibraryDef(String group, String name, String file, String platform) {
+    public NativeDef(String group, String name, String file, String platform) {
         this.group = group;
         this.name = name;
         this.file = file;
@@ -21,7 +21,7 @@ public class LibraryDef {
         if (obj == null || obj.getClass() != getClass()) {
             return false;
         }
-        LibraryDef other = (LibraryDef) obj;
+        NativeDef other = (NativeDef) obj;
         return name.equals(other.name) && platform.equals(other.platform);
     }
 

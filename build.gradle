@@ -7,7 +7,7 @@ task wrapper(type: Wrapper) {
 
 group = 'com.github.boukefalos'
 archivesBaseName = 'jlibloader'
-version = '0.2'
+version = '0.3'
 
 uploadArchives {
 	repositories.mavenDeployer {
