@@ -20,24 +20,24 @@ public class NativeLocator {
 	public File find(NativeDef nativeDef) throws IOException {
 		String resourceName = String.format("%s/%s/%s/%s", nativeDef.getGroupPath(), nativeDef.name, nativeDef.platform, nativeDef.file);
         if (extractDir != null) {
-            File libFile = new File(extractDir, String.format("%s/%s", nativeDef.platform, nativeDef.file));
-            File lockFile = new File(libFile.getParentFile(), libFile.getName() + ".lock");
+            File file = new File(extractDir, String.format("%s/%s", nativeDef.platform, nativeDef.file));
+            File lockFile = new File(file.getParentFile(), file.getName() + ".lock");
             lockFile.getParentFile().mkdirs();
             lockFile.createNewFile();
             RandomAccessFile lockFileAccess = new RandomAccessFile(lockFile, "rw");
             try {
                 if (lockFile.length() > 0 && lockFileAccess.readBoolean()) {
-                    // Library has been extracted
-                    return libFile;
+                    // File has been extracted
+                    return file;
                 }
                 URL resource = getClass().getClassLoader().getResource(resourceName);
                 if (resource != null) {
-                    // Extract library and write marker to lock file
-                    libFile.getParentFile().mkdirs();
-                    copy(resource, libFile);
+                    // Extract file and write marker to lock file
+                    file.getParentFile().mkdirs();
+                    copy(resource, file);
                     lockFileAccess.seek(0);
                     lockFileAccess.writeBoolean(true);
-                    return libFile;
+                    return file;
                 }
             } finally {
                 // Also releases lock
@@ -46,15 +46,15 @@ public class NativeLocator {
         } else {
             URL resource = getClass().getClassLoader().getResource(resourceName);
             if (resource != null) {
-                File libFile;
-                File libDir = File.createTempFile(nativeDef.file, "dir");
-                libDir.delete();
-                libDir.mkdirs();
-                libFile = new File(libDir, nativeDef.file);
-                libFile.deleteOnExit();
-                libDir.deleteOnExit();
-                copy(resource, libFile);
-                return libFile;
+                File file;
+                File directory = File.createTempFile(nativeDef.file, "dir");
+                directory.delete();
+                directory.mkdirs();
+                file = new File(directory, nativeDef.file);
+                file.deleteOnExit();
+                directory.deleteOnExit();
+                copy(resource, file);
+                return file;
             }
         }
         return null;		
